@@ -13,7 +13,7 @@
 
 header {
     height: 400px;
-    background-image: radial-gradient(224.24% 668.5% at 14.41% -14.14%, rgba(0,0,0,0.57) 44.5%, rgba(255,255,255,0) 67.11%),url("../hotels/assets/headerBackground.jpeg");
+    background-image: radial-gradient(224.24% 668.5% at 14.41% -14.14%, rgba(0,0,0,0.57) 44.5%, rgba(255,255,255,0) 67.11%),url("./assets/headerBackground.jpeg");
     background-size: 100% 150%;
     padding: 3rem 3rem 1.75rem;
     color: #fff;
@@ -39,6 +39,7 @@ h1 {
     flex: 1;
     column-gap: 0.7rem;
     row-gap: 0.3rem;
+    
 }
 
 .filter-grid select {
@@ -53,10 +54,11 @@ h1 {
     max-width: 18rem;
     flex: 1;
     font-size: 0.93rem;
+    border: none;
 }
 
 .select-countries {
-    background: url("../hotels/assets/icon__pin.svg");
+    background: url("./assets/icon__pin.svg");
 }
 
 .filter-icon {
@@ -100,5 +102,122 @@ h1 {
 }
 
 
-
 /*----NavBar----*/
+
+/*----Main----*/
+
+main {
+    background-color: rgba(255 255 255 1);
+    overflow-y: scroll;
+    height: 100vh;
+    display: block;
+    padding: 0 1rem 0.8rem 1rem;
+}
+
+
+.hotels-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 1.2rem;
+    row-gap: 1.2rem;
+    margin-top: 1.5rem;
+}
+
+.card {
+    height: 21.83vw;
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    border-radius: 1rem;
+    color: #fff;
+    font-size: 0.75rem;
+    overflow: hidden;
+    justify-content: flex-end;
+}
+
+.hotel-image {
+    height: 100%;
+    width: 100%;
+    border-radius: 1rem;
+    position: absolute;
+    z-index: 1;
+}
+
+/*
+.card ::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.78) 76.46%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.card ::after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: radial-gradient(224.24% 668.5% at 14.41% -14.14%, rgba(0,0,0,0.57) 44.5%, rgba(255,255,255,0) 67.11%);
+    z-index: 1;
+}
+*/
+
+.hotel-name {
+   
+    font-size: 1.75rem;
+    z-index: 2;
+    font-weight: bold;
+    margin-block-start: 0.83em;
+    margin-left: 1rem;
+}
+
+.hotel-info {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-items: flex-end;
+    z-index: 2;
+    font-size: 1rem;
+    margin-block-end: 1.2rem;
+    margin-left: 1rem;
+}
+
+.hotel-country {
+    display: flex;
+    
+}
+
+.div-hotel-info {
+    display: flex;
+    
+}
+
+.hotel-rooms {
+    padding-right: 0.35rem;
+}
+
+.button-book-it {
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    border: 2px solid #FFFFFF;
+    color: #fff;
+    padding: 1% 0;
+    width: 5.5rem;
+    font-size: 1rem;
+    align-self: flex-end;
+    z-index: 2;
+    background: rgba(51,51,51,0.7);
+    font-weight: 500;
+    margin-right: 1rem;
+    position: absolute;
+    
+}
+
+
+/*----Main----*/

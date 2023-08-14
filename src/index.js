@@ -1,3 +1,5 @@
+import { hotelsRequest } from "./hotels.js";
+
 /*-------NavBar--------*/
 
 /*---h1---*/ 
@@ -9,6 +11,7 @@ const filterGrid = document.createElement("div");
 const select = document.createElement("select");
 const selectCountries = document.createElement("select");
 selectCountries.className = "select-countries filter-icon"
+selectCountries.id = "selected-country"
 const inputDateFrom = document.createElement("input");
 inputDateFrom.type = "date";
 inputDateFrom.className = "input-dateFrom filter-icon";
@@ -127,14 +130,110 @@ foundContainer.appendChild(foundTitle);
 
 const foundContent = document.createElement("p");
 foundContent.className = "found-content";
-foundContent.innerText = `All sizes hotels of all category prices, in ${"x"}.`
+foundContent.id = "content-text"
+
+const selectedElement = document.getElementById("selected-country");
+const selectedValueText = document.getElementById("content-text");
+
+selectedElement.addEventListener('change', (e) => {
+    // Get the selected value
+    const selectedValue = e.target.value;
+
+    // Update the text content of the text element
+    foundContent.innerText = `All sizes hotels of all category prices, in ${selectedValue}.`;
+  });
+
+
 
 foundContainer.appendChild(foundContent);
 
-
-
-
-
-
-
 /*-------NavBar--------*/
+
+/*-------Main--------*/
+
+const main = document.querySelector("main");
+const hotelsContainer = document.createElement("section");
+hotelsContainer.className = "hotels-container";
+hotelsContainer.id = "hotels-card"
+
+main.appendChild(hotelsContainer);
+
+
+
+/*---Cards---*/
+
+const hotelCards = document.getElementById("hotels-card");
+
+async function renderHotelCards() {
+    const respuesta = await hotelsRequest();
+    const data = await respuesta.json();
+    console.log(data);
+
+    hotelCards.innerHTML = "";
+
+    data.forEach((hotel) => {
+        const cardHotel = document.createElement("article");
+        cardHotel.className = "card";
+        hotelCards.appendChild(cardHotel);
+
+        const imagenHotel = document.createElement("img");
+        imagenHotel.setAttribute("src", hotel.photo);
+        imagenHotel.setAttribute("alt", hotel.name);
+        imagenHotel.className = "hotel-image";
+        cardHotel.appendChild(imagenHotel);
+
+        const nombreHotel = document.createElement("h2");
+        nombreHotel.innerText = hotel.name;
+        nombreHotel.className = "hotel-name";
+        cardHotel.appendChild(nombreHotel);
+
+        const sectionInfoHotel = document.createElement("section");
+        sectionInfoHotel.className = "hotel-info"; 
+        cardHotel.appendChild(sectionInfoHotel);
+
+        const divInfoCountry = document.createElement("div");
+        divInfoCountry.className = "hotel-country"
+        sectionInfoHotel.appendChild(divInfoCountry);
+
+        const countryFlag = document.createElement("img");
+        countryFlag.className = "country-flag";
+        /*AÑADIR BANDERA DEL PAIS*/
+
+        const country = document.createElement("p");
+        country.className = "country"
+        country.innerText = hotel.country;
+        divInfoCountry.appendChild(country);
+
+        const divInfoHotel = document.createElement("div");
+        divInfoHotel.className = "div-hotel-info";
+        sectionInfoHotel.appendChild(divInfoHotel);
+
+        const hotelRooms = document.createElement("p");
+        hotelRooms.className = "hotel-rooms";
+        hotelRooms.innerText = hotel.rooms + " rooms" + " -";
+        divInfoHotel.appendChild(hotelRooms);
+
+        const hotelPrice = document.createElement("p");
+        hotelPrice.className = "hotel-price";
+        hotelPrice.innerText = "$".repeat(hotel.price);
+        divInfoHotel.appendChild(hotelPrice);
+
+        const bookIt = document.createElement("button");
+        bookIt.innerText = "Book it!";
+        bookIt.className = "button-book-it"
+        cardHotel.appendChild(bookIt);
+        
+  });
+}
+
+
+renderHotelCards();
+
+
+
+
+/*---Cards---*/
+
+
+/*-------Main--------*/
+
