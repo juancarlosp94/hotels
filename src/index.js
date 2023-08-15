@@ -160,18 +160,72 @@ main.appendChild(hotelsContainer);
 
 
 
-/*---Cards---*/
+/*---Cards & Filter Logic---*/
+
+
 
 const hotelCards = document.getElementById("hotels-card");
+let data = [];
+// Inside your script after the renderHotelCards function
 
-async function renderHotelCards() {
+// Event listeners for filter elements
+selectCountries.addEventListener('change', () => {
+  console.log("Country filter changed");
+  applyFilters();
+});
+inputDateFrom.addEventListener('change', applyFilters);
+inputDateTo.addEventListener('change', applyFilters);
+selectPrices.addEventListener('change', applyFilters);
+selectSizes.addEventListener('change', applyFilters);
+
+// Apply filters function
+function applyFilters() {
+    const selectedCountry = selectCountries.value;
+    const dateFrom = inputDateFrom.value;
+    const dateTo = inputDateTo.value;
+    const selectedPrice = selectPrices.value;
+    const selectedSize = selectSizes.value;
+
+    console.log("Selected Country:", selectedCountry);
+    console.log("Date From:", dateFrom);
+    console.log("Date To:", dateTo);
+    console.log("Selected Price:", selectedPrice);
+    console.log("Selected Size:", selectedSize);
+
+    const dateFromMs = dateFrom ? Date.parse(dateFrom) : undefined;
+    const dateToMs = dateTo ? Date.parse(dateTo) : undefined;
+
+    // Filter the hotel data based on the selected criteria
+    const filteredData = data.filter(hotel => {
+
+      const hotelDateMs = Date.parse(hotel.date);
+        // Implement your filtering logic here
+        // Example: Return true if the hotel meets the selected criteria
+        return (
+          (selectedCountry === 'all' || hotel.country === selectedCountry) &&
+          (!dateFromMs || hotelDateMs >= dateFromMs) &&
+          (!dateToMs || hotelDateMs <= dateToMs) &&
+          (selectedPrice === 'all' || hotel.price === selectedPrice) &&
+          (selectedSize === 'all' || hotel.size === selectedSize)
+            // Other filtering conditions based on date, price, and size
+        );
+    });
+
+    // Call the render function with filtered data
+    renderHotelCards(filteredData);
+}
+
+// Update renderHotelCards to accept filtered data and render cards
+async function renderHotelCards(filteredData) {
     const respuesta = await hotelsRequest();
-    const data = await respuesta.json();
+    data = await respuesta.json();
     console.log(data);
 
     hotelCards.innerHTML = "";
+    
 
-    data.forEach((hotel) => {
+    filteredData.forEach((hotel) => {
+        // ... your card rendering logic
         const cardHotel = document.createElement("article");
         cardHotel.className = "card";
         hotelCards.appendChild(cardHotel);
@@ -222,13 +276,79 @@ async function renderHotelCards() {
         bookIt.innerText = "Book it!";
         bookIt.className = "button-book-it"
         cardHotel.appendChild(bookIt);
+    });
+}
+
+renderHotelCards(data);
+
+/*
+async function renderHotelCards() {
+    const respuesta = await hotelsRequest();
+    const data = await respuesta.json();
+    console.log(data);
+
+    
+
+    hotelCards.innerHTML = "";
+
+    data.forEach((hotel) => {
+        const cardHotel = document.createElement("article");
+        cardHotel.className = "card";
+        hotelCards.appendChild(cardHotel);
+
+        const imagenHotel = document.createElement("img");
+        imagenHotel.setAttribute("src", hotel.photo);
+        imagenHotel.setAttribute("alt", hotel.name);
+        imagenHotel.className = "hotel-image";
+        cardHotel.appendChild(imagenHotel);
+
+        const nombreHotel = document.createElement("h2");
+        nombreHotel.innerText = hotel.name;
+        nombreHotel.className = "hotel-name";
+        cardHotel.appendChild(nombreHotel);
+
+        const sectionInfoHotel = document.createElement("section");
+        sectionInfoHotel.className = "hotel-info"; 
+        cardHotel.appendChild(sectionInfoHotel);
+
+        const divInfoCountry = document.createElement("div");
+        divInfoCountry.className = "hotel-country"
+        sectionInfoHotel.appendChild(divInfoCountry);
+
+        const countryFlag = document.createElement("img");
+        countryFlag.className = "country-flag";
+        /*AÑADIR BANDERA DEL PAIS*/
+/*
+        const country = document.createElement("p");
+        country.className = "country"
+        country.innerText = hotel.country;
+        divInfoCountry.appendChild(country);
+
+        const divInfoHotel = document.createElement("div");
+        divInfoHotel.className = "div-hotel-info";
+        sectionInfoHotel.appendChild(divInfoHotel);
+
+        const hotelRooms = document.createElement("p");
+        hotelRooms.className = "hotel-rooms";
+        hotelRooms.innerText = hotel.rooms + " rooms" + " -";
+        divInfoHotel.appendChild(hotelRooms);
+
+        const hotelPrice = document.createElement("p");
+        hotelPrice.className = "hotel-price";
+        hotelPrice.innerText = "$".repeat(hotel.price);
+        divInfoHotel.appendChild(hotelPrice);
+
+        const bookIt = document.createElement("button");
+        bookIt.innerText = "Book it!";
+        bookIt.className = "button-book-it"
+        cardHotel.appendChild(bookIt);
         
   });
 }
 
 
 renderHotelCards();
-
+*/
 
 
 
