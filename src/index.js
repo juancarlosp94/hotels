@@ -13,6 +13,7 @@ const selectCountries = document.createElement("select");
 selectCountries.className = "select-countries filter-icon"
 selectCountries.id = "selected-country"
 const inputDateFrom = document.createElement("input");
+inputDateFrom.setAttribute("min", "2023-08-15") // Format date 
 inputDateFrom.type = "date";
 inputDateFrom.className = "input-dateFrom filter-icon";
 const inputDateTo = document.createElement("input");
@@ -24,6 +25,7 @@ const selectSizes = document.createElement("select");
 selectSizes.className = "selectSizes filter-icon";
 const clearButton = document.createElement("button");
 clearButton.className = "clear-button";
+clearButton.addEventListener("click", clearFilters);
 
 
 h1.className = "title"
@@ -71,16 +73,16 @@ optionAllPrices.innerText = "All prices";
 optionAllPrices.value = "all";
 const optionOne = document.createElement("option");
 optionOne.innerText = "$";
-optionOne.value = "one";
+optionOne.value = "1";
 const optionTwo = document.createElement("option");
 optionTwo.innerText = "$$";
-optionTwo.value = "two";
+optionTwo.value = "2";
 const optionThree = document.createElement("option");
 optionThree.innerText = "$$$";
-optionThree.value = "three";
+optionThree.value = "3";
 const optionFour = document.createElement("option");
 optionFour.innerText = "$$$$";
-optionFour.value = "four";
+optionFour.value = "4";
 
 selectPrices.appendChild(optionAllPrices);
 selectPrices.appendChild(optionOne);
@@ -138,12 +140,9 @@ const selectedValueText = document.getElementById("content-text");
 selectedElement.addEventListener('change', (e) => {
     // Get the selected value
     const selectedValue = e.target.value;
-
     // Update the text content of the text element
     foundContent.innerText = `All sizes hotels of all category prices, in ${selectedValue}.`;
   });
-
-
 
 foundContainer.appendChild(foundContent);
 
@@ -166,13 +165,22 @@ main.appendChild(hotelsContainer);
 
 const hotelCards = document.getElementById("hotels-card");
 let data = [];
+
+ const getHotels = async () => {
+  const respuesta = await hotelsRequest();
+    data = await respuesta.json();
+    /*console.log(data);*/
+    
+    return data
+}
+
+const hotels = await getHotels()
+
+
 // Inside your script after the renderHotelCards function
 
 // Event listeners for filter elements
-selectCountries.addEventListener('change', () => {
-  console.log("Country filter changed");
-  applyFilters();
-});
+selectCountries.addEventListener('change',applyFilters);
 inputDateFrom.addEventListener('change', applyFilters);
 inputDateTo.addEventListener('change', applyFilters);
 selectPrices.addEventListener('change', applyFilters);
@@ -181,8 +189,8 @@ selectSizes.addEventListener('change', applyFilters);
 // Apply filters function
 function applyFilters() {
     const selectedCountry = selectCountries.value;
-    const dateFrom = inputDateFrom.value;
-    const dateTo = inputDateTo.value;
+    const dateFrom = new Date(inputDateFrom.value) ;
+    const dateTo = new Date(inputDateTo.value);
     const selectedPrice = selectPrices.value;
     const selectedSize = selectSizes.value;
 
@@ -192,34 +200,41 @@ function applyFilters() {
     console.log("Selected Price:", selectedPrice);
     console.log("Selected Size:", selectedSize);
 
-    const dateFromMs = dateFrom ? Date.parse(dateFrom) : undefined;
-    const dateToMs = dateTo ? Date.parse(dateTo) : undefined;
+    
+
+    const dateFromSelected = new Date(dateFrom.getTime() + dateFrom.getTimezoneOffset() * 60000); // Default to 0 if no date selected
+    
+    const dateToSelected = new Date(dateTo.getTime() + dateTo.getTimezoneOffset() * 60000);
+    console.log(dateToSelected);
+    const dateMls = dateToSelected - dateFromSelected;
+    console.log(dateMls);
+    /*console.log(dateFromMs);*/
 
     // Filter the hotel data based on the selected criteria
-    const filteredData = data.filter(hotel => {
+    const filteredData = hotels.filter(hotel => {
 
-      const hotelDateMs = Date.parse(hotel.date);
+      
+      
         // Implement your filtering logic here
         // Example: Return true if the hotel meets the selected criteria
         return (
-          (selectedCountry === 'all' || hotel.country === selectedCountry) &&
-          (!dateFromMs || hotelDateMs >= dateFromMs) &&
-          (!dateToMs || hotelDateMs <= dateToMs) &&
-          (selectedPrice === 'all' || hotel.price === selectedPrice) &&
-          (selectedSize === 'all' || hotel.size === selectedSize)
+          (selectedCountry === 'all' || hotel.country.toLowerCase() == selectedCountry.toLowerCase()) &&
+          dateMls >= hotel.availabilityTo &&
+          (selectedPrice === 'all' || hotel.price == selectedPrice)/* &&
+          (selectedSize === 'all' || hotel.size.toLowerCase() == selectedSize.toLowerCase())*/
             // Other filtering conditions based on date, price, and size
         );
     });
-
+    console.log(filteredData);
     // Call the render function with filtered data
-    renderHotelCards(filteredData);
+    filteredData.length > 0 ? 
+    renderHotelCards(filteredData) :
+    console.log("No existen hoteles con estas caracterisitcas");
 }
 
 // Update renderHotelCards to accept filtered data and render cards
 async function renderHotelCards(filteredData) {
-    const respuesta = await hotelsRequest();
-    data = await respuesta.json();
-    console.log(data);
+    
 
     hotelCards.innerHTML = "";
     
@@ -279,7 +294,24 @@ async function renderHotelCards(filteredData) {
     });
 }
 
-renderHotelCards(data);
+function clearFilters() {
+  selectCountries.value = 'all';
+  inputDateFrom.value = '';
+  inputDateTo.value = '';
+  selectPrices.value = 'all';
+  selectSizes.value = 'all';
+
+  applyFilters(); // Apply filters again to show all hotels
+}
+
+
+renderHotelCards(hotels);
+
+/*Date format:
+new Date(
+    inputvalue.getTime() +inputvalue.getTimezoneOffset() * 60000
+  );
+*/
 
 /*
 async function renderHotelCards() {
