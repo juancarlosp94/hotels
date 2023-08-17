@@ -1,0 +1,10 @@
+<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon__pin" clip-path="url(#clip0_1947_399)">
+<path id="Vector" d="M12.2647 2C8.47061 2 5.40198 5.13 5.40198 9C5.40198 14.25 12.2647 22 12.2647 22C12.2647 22 19.1275 14.25 19.1275 9C19.1275 5.13 16.0588 2 12.2647 2ZM12.2647 11.5C10.9118 11.5 9.81374 10.38 9.81374 9C9.81374 7.62 10.9118 6.5 12.2647 6.5C13.6177 6.5 14.7157 7.62 14.7157 9C14.7157 10.38 13.6177 11.5 12.2647 11.5Z" fill="black"/>
+</g>
+<defs>
+<clipPath id="clip0_1947_399">
+<rect width="24" height="24" fill="white" transform="translate(0.5)"/>
+</clipPath>
+</defs>
+</svg>
